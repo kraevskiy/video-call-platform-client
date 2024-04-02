@@ -4,6 +4,6 @@
 
 @layer base {
   body {
-    @apply bg-light-secondary dark:bg-dark-secondary text-light-primary dark:text-dark-primary
+    /*@apply bg-light-secondary dark:bg-dark-secondary text-light-primary dark:text-dark-primary*/
   }
 }
