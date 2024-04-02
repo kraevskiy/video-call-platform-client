@@ -1,15 +1,26 @@
 "use client";
 
+import { signIn } from "next-auth/react";
+import { DEFAULT_CALLBACK_URL } from "../../../../../routes";
+
 export default function GithubButton({
-  callbackUrl,
+  callbackUrl = DEFAULT_CALLBACK_URL,
 }: {
   callbackUrl?: string;
 }) {
   return (
-    <div className="flex cursor-pointer items-center justify-center gap-x-3 rounded-xl bg-sky-100 dark:bg-gray-900 p-3">
+    <div
+      className="flex cursor-pointer items-center justify-center gap-x-3 rounded-xl bg-sky-100 p-3 dark:bg-gray-900"
+      onClick={() => signIn("github", { callbackUrl })}
+    >
       Continue with github{" "}
       <span className="h-6 w-6">
-        <svg width="100%" height="100%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 96 96"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             fillRule="evenodd"
             clipRule="evenodd"

@@ -1,12 +1,18 @@
 "use client";
 
+import { signIn } from "next-auth/react";
+import { DEFAULT_CALLBACK_URL } from '../../../../../routes';
+
 export default function GoogleButton({
-  callbackUrl,
+  callbackUrl = DEFAULT_CALLBACK_URL,
 }: {
   callbackUrl?: string;
 }) {
   return (
-    <div className="flex cursor-pointer w-full items-center justify-center gap-x-3 rounded-xl bg-sky-100 dark:bg-gray-900 p-3">
+    <div
+      className="flex w-full cursor-pointer items-center justify-center gap-x-3 rounded-xl bg-sky-100 p-3 dark:bg-gray-900"
+      onClick={() => signIn("google", { callbackUrl })}
+    >
       Continue with google{" "}
       <span className="h-5 w-5">
         <svg
