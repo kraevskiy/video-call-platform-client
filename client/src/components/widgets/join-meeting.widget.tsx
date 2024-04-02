@@ -7,7 +7,7 @@ export function JoinMeetingWidget() {
   const [code, setCode] = useState("");
   return (
     <>
-      <div className="grid gap-3 sm:grid-cols-[3fr,1fr]">
+      <div className="grid gap-3 sm:grid-cols-[3fr,1fr] items-center">
         <Input
           className="text-md h-11 sm:rounded-2xl"
           placeholder="Enter code"
