@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^1.5.2",
     "@hookform/resolvers": "^3.3.4",
+    "@prisma/client": "^5.11.0",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
@@ -24,6 +26,7 @@
     "lucide": "^0.364.0",
     "lucide-react": "^0.364.0",
     "next": "14.1.4",
+    "next-auth": "^5.0.0-beta.16",
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
@@ -44,6 +47,7 @@
     "postcss": "^8",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.13",
+    "prisma": "^5.11.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
