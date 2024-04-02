@@ -6,8 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Separator } from '@/components/ui/separator';
-import { GithubButton, GoogleButton } from '@/app/auth/_components/buttons';
+import { Separator } from "@/components/ui/separator";
+import { GithubButton, GoogleButton } from "@/app/auth/_components/buttons";
+import { useSearchParams } from "next/navigation";
+import { Routes } from '@/../routes';
 
 export default function SignInForm() {
   const {
@@ -22,6 +24,8 @@ export default function SignInForm() {
     },
     resolver: zodResolver(SignInValidationSchema),
   });
+  const searchParams = useSearchParams();
+  const callbackURL = searchParams.get("callbackUrl") ?? Routes.MAIN;
 
   const onSubmit: SubmitHandler<SignInInputs> = async (data) => {
     console.log(data);
@@ -51,14 +55,14 @@ export default function SignInForm() {
         <Button type="submit" className="w-full">
           Sign in
         </Button>
-        <Separator className="my-5 dark:bg-gray-900"/>
-        <div className="space-y-2 mb-4">
-          <GoogleButton />
-          <GithubButton />
+        <Separator className="my-5 dark:bg-gray-900" />
+        <div className="mb-4 space-y-2">
+          <GoogleButton callbackUrl={callbackURL}/>
+          <GithubButton callbackUrl={callbackURL}/>
         </div>
         <div className="text-secondary text-sm">
           Don't have an account yet?{" "}
-          <Link href="/auth/sign-up" className="cursor-pointer text-blue-500">
+          <Link href={Routes.SIGN_UP} className="cursor-pointer text-blue-500">
             Sign up
           </Link>
         </div>

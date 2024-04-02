@@ -1,17 +1,23 @@
-import Image from 'next/image';
-import Time from '@/components/navbar/time';
-import MyAvatar from '@/components/navbar/my-avatar';
+import Image from "next/image";
+import Time from "@/components/navbar/time";
+import MyAvatar from "@/components/navbar/my-avatar";
+import { auth } from "../../../auth";
 
-const Navbar = () => {
+export default async function Navbar() {
+  const session = await auth();
   return (
-    <div className="bg-sky-50 dark:bg-gray-800 flex w-full p-5 justify-between items-center">
-      <Image src="/logo.png" alt="Video platform" width={40} height={38} quality={100}/>
+    <div className="flex w-full items-center justify-between bg-sky-50 p-5 dark:bg-gray-800">
+      <Image
+        src="/logo.png"
+        alt="Video platform"
+        width={40}
+        height={38}
+        quality={100}
+      />
       <div className="flex items-center gap-x-5">
         <Time />
-        <MyAvatar />
+        {session && <MyAvatar />}
       </div>
     </div>
   );
-};
-
-export default Navbar;
+}

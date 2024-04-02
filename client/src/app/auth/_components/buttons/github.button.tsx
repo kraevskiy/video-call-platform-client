@@ -1,10 +1,9 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { DEFAULT_CALLBACK_URL } from "../../../../../routes";
 
 export default function GithubButton({
-  callbackUrl = DEFAULT_CALLBACK_URL,
+  callbackUrl,
 }: {
   callbackUrl?: string;
 }) {

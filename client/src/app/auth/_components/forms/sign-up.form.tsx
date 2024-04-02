@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { GithubButton, GoogleButton } from '@/app/auth/_components/buttons';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Routes } from '@/../routes';
 
 export default function SignUpForm() {
 	const {
@@ -23,6 +25,8 @@ export default function SignUpForm() {
 		},
 		resolver: zodResolver(SignUpValidationSchema),
 	});
+	const searchParams = useSearchParams();
+	const callbackURL = searchParams.get("callbackUrl") ?? Routes.MAIN;
 
 	const onSubmit: SubmitHandler<SignUpInputs> = async (data) => {
 		console.log(data);
@@ -60,12 +64,12 @@ export default function SignUpForm() {
 				</Button>
 				<Separator className="my-5 dark:bg-gray-900"/>
 				<div className="space-y-2 mb-4">
-					<GoogleButton />
-					<GithubButton />
+					<GoogleButton callbackUrl={callbackURL}/>
+					<GithubButton callbackUrl={callbackURL}/>
 				</div>
 				<div className="text-secondary text-sm">
 					Already have an account?{" "}
-					<Link href="/auth/sign-in" className="cursor-pointer text-blue-500">
+					<Link href={Routes.SIGN_IN} className="cursor-pointer text-blue-500">
 						Sign in
 					</Link>
 				</div>
