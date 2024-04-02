@@ -35,8 +35,8 @@ const config = {
       colors: {
         "dark-primary": "#242247",
         "dark-secondary": "#2E2C54",
-        "light-primary": "#FFFFFF",
-        "light-secondary": "#F5F5FD",
+        "light-secondary": "#FFFFFF",
+        "light-primary": "#F5F5FD",
       },
       textColor: {
         "light-primary": "#17171F",
