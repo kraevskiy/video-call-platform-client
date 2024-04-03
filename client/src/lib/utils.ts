@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { nanoid } from 'nanoid';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,4 +18,8 @@ export function initialsName(fullName: string) {
     .map((w) => w[0])
     .join("")
     .toLocaleUpperCase();
+}
+
+export function generateCode(length = 18) {
+  return nanoid(length);
 }
