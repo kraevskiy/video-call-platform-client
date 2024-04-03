@@ -7,13 +7,17 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from "next-auth/react";
 import { IoMdMore } from "react-icons/io";
-import { initialsName } from '@/lib/utils';
+import { initialsName } from "@/lib/utils";
 
 export default function MyAvatar() {
   const { theme, setTheme } = useTheme();
-  const {data} = useSession();
+  const { data } = useSession();
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <Popover>
@@ -22,11 +26,15 @@ export default function MyAvatar() {
           <div className="flex items-center gap-x-5">
             <Avatar className="border-2 border-white">
               <AvatarImage src={data?.user?.image || ""} />
-              <AvatarFallback>{initialsName(data?.user?.name || '')}</AvatarFallback>
+              <AvatarFallback>
+                {initialsName(data?.user?.name || "")}
+              </AvatarFallback>
             </Avatar>
-            <div className="hidden font-medium md:block">{data?.user?.name}</div>
+            <div className="hidden font-medium md:block">
+              {data?.user?.name}
+            </div>
           </div>
-          <IoMdMore className="hidden md:block h-8 w-8" />
+          <IoMdMore className="hidden h-8 w-8 md:block" />
         </div>
       </PopoverTrigger>
       <PopoverContent>
