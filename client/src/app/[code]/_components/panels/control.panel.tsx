@@ -38,9 +38,19 @@ export default function ControlPanel() {
     switch (kind) {
       case "audio":
         toggleAudio();
+        // socket.emit("user:toggle-audio", myPeerId);
         break;
       case "video":
         toggleVideo();
+        // toggleVideo((newTrack: MediaStreamTrack) => {
+        //   Object.values(connections).forEach((el) => {
+        //     const sender = el.peerConnection?.getSenders().find((s) => {
+        //       return s.track?.kind === newTrack.kind;
+        //     });
+        //     sender?.replaceTrack(newTrack);
+        //   });
+        // });
+        // socket.emit("user:toggle-video", myPeerId);
         break;
       default:
         break;

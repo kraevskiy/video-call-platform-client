@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Routes } from "../../../routes";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useShallow } from "zustand/react/shallow";
+import { MeetingProvider } from '@/app/[code]/providers';
 
 export default function MeetingPage({
   params: { code },
@@ -54,5 +55,9 @@ export default function MeetingPage({
     );
   }
 
-  return isLobby ? <Lobby joinHandler={() => setIsLobby(false)}/> : <Meeting />;
+  return <MeetingProvider joinMeeting={() => setIsLobby(false)} >
+    {
+      isLobby ? <Lobby /> : <Meeting />
+    }
+  </MeetingProvider>;
 }

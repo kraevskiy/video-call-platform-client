@@ -15,7 +15,7 @@ import { useMeeting } from "@/hooks/state/use-meeting";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useShallow } from "zustand/react/shallow";
 
-export default function Lobby({ joinHandler }: { joinHandler: () => void }) {
+export default function Lobby() {
   const {
     stream,
     status,
@@ -39,7 +39,7 @@ export default function Lobby({ joinHandler }: { joinHandler: () => void }) {
   }, [stream, getStream]);
 
   const handleJoin = () => {
-    joinHandler();
+    // emit user join
   };
 
   return (
