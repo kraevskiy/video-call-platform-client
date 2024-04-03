@@ -9,7 +9,7 @@ import getMeetingByCode from "@/actions/get/get-meeting-by-code";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Routes } from "../../../routes";
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function MeetingPage({
   params: { code },
@@ -18,7 +18,10 @@ export default function MeetingPage({
 }) {
   const [isLobby, setIsLobby] = useState(true);
   const [loading, setLoading] = useState(true);
-  const { meeting, setMeeting } = useMeeting();
+  const { meeting, setMeeting } = useMeeting((state) => ({
+    meeting: state.meeting,
+    setMeeting: state.setMeeting,
+  }));
   const router = useRouter();
 
   useEffect(() => {
@@ -41,9 +44,11 @@ export default function MeetingPage({
   }, [code, meeting, setMeeting, router]);
 
   if (loading) {
-    return <div className="flex items-center justify-center h-[calc(100dvh)]">
-      <AiOutlineLoading3Quarters className="h-12 w-12 animate-spin" />
-    </div>
+    return (
+      <div className="flex h-[calc(100dvh)] items-center justify-center">
+        <AiOutlineLoading3Quarters className="h-12 w-12 animate-spin" />
+      </div>
+    );
   }
 
   return isLobby ? <Lobby /> : <Meeting />;
