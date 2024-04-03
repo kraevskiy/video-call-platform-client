@@ -1,18 +1,33 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function GoogleButton({
   callbackUrl,
 }: {
   callbackUrl?: string;
 }) {
+  const [loading, setLoading] = useState(false);
+
+  const clickHandler = async () => {
+    setLoading(true);
+    signIn("google", { callbackUrl }).finally(() => {
+      setLoading(false);
+    });
+  };
+
   return (
     <div
       className="flex w-full cursor-pointer items-center justify-center gap-x-3 rounded-xl bg-sky-100 p-3 dark:bg-gray-900"
-      onClick={() => signIn("google", { callbackUrl })}
+      onClick={clickHandler}
     >
-      Continue with google{" "}
+      {loading ? (
+        <AiOutlineLoading3Quarters className="h-6 w-6 animate-spin" />
+      ) : (
+        "Continue with google "
+      )}
       <span className="h-5 w-5">
         <svg
           width="100%"

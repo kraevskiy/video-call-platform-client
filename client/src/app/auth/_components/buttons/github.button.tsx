@@ -1,19 +1,33 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useState } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 export default function GithubButton({
   callbackUrl,
 }: {
   callbackUrl?: string;
 }) {
+  const [loading, setLoading] = useState(false);
+
+  const clickHandler = async () => {
+    setLoading(true);
+    signIn("github", { callbackUrl }).finally(() => {
+      setLoading(false);
+    })
+  }
+
   return (
     <div
       className="flex cursor-pointer items-center justify-center gap-x-3 rounded-xl bg-sky-100 p-3 dark:bg-gray-900"
-      onClick={() => signIn("github", { callbackUrl })}
+      onClick={clickHandler}
     >
-      Continue with github{" "}
-      <span className="h-6 w-6">
+      {loading
+        ? <AiOutlineLoading3Quarters className="h-6 w-6 animate-spin" />
+        : "Continue with github "
+      }
+      <span className="h-6 w-6 ml-2">
         <svg
           width="100%"
           height="100%"
