@@ -1,3 +1,4 @@
 import VideoContainer from "./video.container";
+import StreamsContainer from "./streams.container";
 
-export { VideoContainer };
+export { VideoContainer, StreamsContainer };

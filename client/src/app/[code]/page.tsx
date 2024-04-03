@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Routes } from "../../../routes";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useShallow } from "zustand/react/shallow";
 
 export default function MeetingPage({
   params: { code },
@@ -18,10 +19,12 @@ export default function MeetingPage({
 }) {
   const [isLobby, setIsLobby] = useState(true);
   const [loading, setLoading] = useState(true);
-  const { meeting, setMeeting } = useMeeting((state) => ({
-    meeting: state.meeting,
-    setMeeting: state.setMeeting,
-  }));
+  const { meeting, setMeeting } = useMeeting(
+    useShallow((state) => ({
+      meeting: state.meeting,
+      setMeeting: state.setMeeting,
+    })),
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -51,5 +54,5 @@ export default function MeetingPage({
     );
   }
 
-  return isLobby ? <Lobby /> : <Meeting />;
+  return isLobby ? <Lobby joinHandler={() => setIsLobby(false)}/> : <Meeting />;
 }

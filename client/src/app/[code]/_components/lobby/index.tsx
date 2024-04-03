@@ -1,3 +1,5 @@
+'use client';
+
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { MyStream } from "../streams";
@@ -11,8 +13,9 @@ import {
 } from "react-icons/io5";
 import { useMeeting } from "@/hooks/state/use-meeting";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useShallow } from "zustand/react/shallow";
 
-export default function Lobby() {
+export default function Lobby({ joinHandler }: { joinHandler: () => void }) {
   const {
     stream,
     status,
@@ -22,10 +25,12 @@ export default function Lobby() {
     toggleAudio,
     toggleVideo,
   } = useStream();
-  const { joinStatus, meeting } = useMeeting((state) => ({
-    joinStatus: state.joinStatus,
-    meeting: state.meeting,
-  }));
+  const { joinStatus, meeting } = useMeeting(
+    useShallow((state) => ({
+      joinStatus: state.joinStatus,
+      meeting: state.meeting,
+    })),
+  );
 
   useEffect(() => {
     if (!stream) {
@@ -34,7 +39,7 @@ export default function Lobby() {
   }, [stream, getStream]);
 
   const handleJoin = () => {
-    console.log("Join");
+    joinHandler();
   };
 
   return (

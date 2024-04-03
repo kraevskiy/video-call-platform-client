@@ -11,3 +11,5 @@ export type JoinStatus =
   | "accepted"
   | "wait-for-owner"
   | "room-is-full";
+
+export type MediaKind = "audio" | "video";
