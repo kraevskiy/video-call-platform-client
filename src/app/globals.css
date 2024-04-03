@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    /*@apply bg-light-secondary dark:bg-dark-secondary text-light-primary dark:text-dark-primary*/
+  }
+}
