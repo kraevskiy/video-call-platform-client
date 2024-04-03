@@ -14,7 +14,8 @@ import { useSignUp } from "@/hooks/mutation/use-sign-up";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { Loader2, ShieldAlert } from 'lucide-react';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { LuShieldAlert } from "react-icons/lu";
 
 export default function SignUpForm() {
   const {
@@ -83,12 +84,12 @@ export default function SignUpForm() {
         </div>
         <Button type="submit" className="w-full" disabled={isPending || isSuccess}>
           {isIdle && "Create account"}
-          {isPending && <Loader2 className="h-6 w-6 animate-spin" />}
+          {isPending && <AiOutlineLoading3Quarters className="h-6 w-6 animate-spin" />}
           {isSuccess && "Account created successfully!"}
         </Button>
         {error && (
           <div className="mt-5 w-full flex items-center justify-center gap-x-4 bg-red-500 px-3 py-2 text-center text-white">
-            <ShieldAlert className="w-6 h-6"/>
+            <LuShieldAlert className="w-6 h-6"/>
             {error}
           </div>
         )}

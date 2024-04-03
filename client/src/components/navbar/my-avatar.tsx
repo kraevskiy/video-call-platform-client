@@ -7,24 +7,26 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
-import { EllipsisVertical } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from 'next-auth/react';
+import { IoMdMore } from "react-icons/io";
+import { initialsName } from '@/lib/utils';
 
 export default function MyAvatar() {
   const { theme, setTheme } = useTheme();
-
+  const {data} = useSession();
+  console.log(data);
   return (
     <Popover>
       <PopoverTrigger>
         <div className="flex h-full cursor-pointer items-center justify-between rounded-full bg-sky-100 p-2 dark:bg-gray-900 md:w-80">
           <div className="flex items-center gap-x-5">
             <Avatar className="border-2 border-white">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={data?.user?.image || ""} />
+              <AvatarFallback>{initialsName(data?.user?.name || '')}</AvatarFallback>
             </Avatar>
-            <div className="hidden font-medium md:block">Illia</div>
+            <div className="hidden font-medium md:block">{data?.user?.name}</div>
           </div>
-          <EllipsisVertical className="hidden md:block" />
+          <IoMdMore className="hidden md:block h-8 w-8" />
         </div>
       </PopoverTrigger>
       <PopoverContent>

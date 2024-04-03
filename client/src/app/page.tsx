@@ -14,7 +14,7 @@ export default function Home() {
         <div className="rounded-xl bg-sky-50 p-5 dark:bg-gray-800">
           <h2 className="mb-5 text-xl font-bold">Join or create meeting</h2>
           <h3 className="mb-2 text-lg">Join meeting with code</h3>
-          <JoinMeetingWidget />
+          <JoinMeetingWidget className="mb-5"/>
           <h3 className="mb-2 text-lg">Create new meeting</h3>
           <CreateMeetingWidget />
           <Separator className="my-5 dark:bg-gray-900" />

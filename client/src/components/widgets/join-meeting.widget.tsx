@@ -6,8 +6,9 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { JoinMeetingInputs, JoinMeetingValidationSchema } from '@/types/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
-export function JoinMeetingWidget() {
+export function JoinMeetingWidget({className}: {className?: string}) {
 	const {register, handleSubmit, watch} = useForm<JoinMeetingInputs>({
 		mode: 'onBlur',
 		defaultValues: {
@@ -26,7 +27,7 @@ export function JoinMeetingWidget() {
 	}
 
 	return (
-		<>
+		<div	className={cn(className)}>
 			<form onSubmit={handleSubmit(onSubmit, onError)} className="grid gap-3 sm:grid-cols-[3fr,1fr] items-center">
 				<Input
 					className="text-md h-11 sm:rounded-2xl"
@@ -37,6 +38,6 @@ export function JoinMeetingWidget() {
 				<Button className="sm:rounded-2xl" type="submit">Join</Button>
 			</form>
 			<div className="ml-2 mt-1 text-sm">{watchCode.length}/18</div>
-		</>
+		</div>
 	);
 }
