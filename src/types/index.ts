@@ -13,3 +13,5 @@ export type JoinStatus =
   | "room-is-full";
 
 export type MediaKind = "audio" | "video";
+
+export * from './socket';
