@@ -23,7 +23,7 @@ type MeetingState = {
   imagesList: KeyValue<string>;
 };
 
-type MeetingAction = {
+type MeetingActions = {
   setMeeting: (meeting: Nullable<Meeting>) => void;
   setJoinStatus: (status: JoinStatus) => void;
   addJoinRequest: (req: PeerUserWithSocketId) => void;
@@ -35,7 +35,7 @@ type MeetingAction = {
   reset: () => void;
 };
 
-export const useMeeting = create<MeetingState & MeetingAction>()(
+export const useMeeting = create<MeetingState & MeetingActions>()(
   immer((set) => ({
     meeting: null,
     joinStatus: "idle",

@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { useStream } from "@/hooks/state/use-stream";
 import { useSession } from "next-auth/react";
 import { PeerId, PeerUser } from "@/types";
+import { useRecentMeetings } from "@/hooks/state/use-recent-meetings";
 
 export default function MeetingProvider({
   children,
@@ -19,6 +20,7 @@ export default function MeetingProvider({
 }) {
   const socket = useSocket();
   const {
+    meeting,
     mutedList,
     visibleList,
     namesList,
@@ -30,6 +32,7 @@ export default function MeetingProvider({
     removeConnection,
   } = useMeeting(
     useShallow((state) => ({
+      meeting: state.meeting,
       mutedList: state.mutedList,
       visibleList: state.visibleList,
       namesList: state.namesList,
@@ -50,14 +53,19 @@ export default function MeetingProvider({
     })),
   );
   const { peer, myPeerId, setMyPeerId, setPeer } = usePeer();
+  const addMeetingToRecent = useRecentMeetings((state) => state.setMeeting);
 
   useEffect(() => {
+    if (!meeting) {
+      return;
+    }
     socket.connect();
-
+    addMeetingToRecent(meeting);
     return () => {
+      window.location.reload();
       socket.disconnect();
     };
-  }, [socket]);
+  }, [socket, meeting, addMeetingToRecent]);
 
   useEffect(() => {
     (async function createPeer() {

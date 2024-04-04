@@ -3,6 +3,9 @@
 import { cn, initialsName } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IoMicOutline, IoMicOffOutline } from "react-icons/io5";
+import { useToggle } from "usehooks-ts";
+import { useEffect } from "react";
+import hark from "hark";
 
 type VideoContainerProps = {
   muted: boolean;
@@ -21,8 +24,23 @@ export default function VideoContainer({
   stream,
   children,
 }: VideoContainerProps) {
+  const [speaking, toggleSpeaking] = useToggle(false);
+
+  useEffect(() => {
+    const speechEvents = hark(stream, {});
+    speechEvents.on("speaking", toggleSpeaking);
+    speechEvents.on("stopped_speaking", toggleSpeaking);
+    return () => {
+      speechEvents.stop();
+    };
+  }, [stream, toggleSpeaking]);
+
   return (
-    <div className="relative h-full rounded-xl">
+    <div
+      className={cn("relative h-full rounded-xl border  border-transparent", {
+        "border-blue-500": speaking,
+      })}
+    >
       <div
         className={cn("h-full w-full", {
           hidden: !visible,
@@ -40,13 +58,15 @@ export default function VideoContainer({
           </Avatar>
         </div>
       )}
-      <p className="bg-gray/20 absolute bottom-3 left-4 select-none rounded-full py-2 px-4 text-md font-medium text-white backdrop-blur-lg dark:bg-gray-300/20">
+      <p className="bg-gray/20 absolute bottom-3 left-4 select-none rounded-full px-4 py-2 text-md font-medium text-white backdrop-blur-lg dark:bg-gray-300/20">
         {name}
       </p>
       <div className="absolute right-3 top-3 ">
-        {
-          muted ? <IoMicOffOutline className="w-6 h-6" /> : <IoMicOutline className="w-6 h-6 text-red-500" />
-        }
+        {muted ? (
+          <IoMicOffOutline className="h-6 w-6" />
+        ) : (
+          <IoMicOutline className="h-6 w-6 text-red-500" />
+        )}
       </div>
     </div>
   );

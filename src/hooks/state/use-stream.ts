@@ -9,7 +9,7 @@ type StreamState = {
   muted: boolean;
 };
 
-type StreamAction = {
+type StreamActions = {
   setStream: (stream: Nullable<MediaStream>) => void;
   setStatus: (status: StreamStatus) => void;
   setVisible: (visible: boolean) => void;
@@ -27,7 +27,7 @@ const initialState: StreamState = {
   muted: false,
 };
 
-export const useStream = create<StreamState & StreamAction>()(
+export const useStream = create<StreamState & StreamActions>()(
   immer((set) => ({
     ...initialState,
     setStream: (stream) => {
