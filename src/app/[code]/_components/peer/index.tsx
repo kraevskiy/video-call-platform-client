@@ -1,10 +1,10 @@
 "use client";
 
-import { memo } from 'react';
+import { memo } from "react";
 
-function Peer({
+function PeerVideo({
   stream,
-  isMe,
+  isMe = false,
 }: {
   stream: MediaStream;
   isMe?: boolean;
@@ -21,8 +21,18 @@ function Peer({
         muted={isMe}
         className="aspect-video h-full -scale-x-100 object-contain"
       />
+      <audio
+        ref={(node) => {
+          if (node) {
+            node.srcObject = stream;
+          }
+        }}
+        autoPlay
+        muted={isMe}
+        className="hidden"
+      />
     </div>
   );
 }
 
-export default memo(Peer);
+export default memo(PeerVideo);

@@ -5,6 +5,10 @@ import { useEffect } from "react";
 import { usePeer } from "@/hooks/state/use-peer";
 import { useMeeting } from "@/hooks/state/use-meeting";
 import { useShallow } from "zustand/react/shallow";
+import toast from "react-hot-toast";
+import { useStream } from "@/hooks/state/use-stream";
+import { useSession } from "next-auth/react";
+import { PeerId, PeerUser } from "@/types";
 
 export default function MeetingProvider({
   children,
@@ -14,13 +18,38 @@ export default function MeetingProvider({
   joinMeeting: () => void;
 }) {
   const socket = useSocket();
-  const { myPeerId, setMyPeerId, setPeer } = usePeer();
-  const { setJoinStatus, addJoinRequest } = useMeeting(
+  const {
+    mutedList,
+    visibleList,
+    namesList,
+    setPeerMuted,
+    setPeerVisible,
+    setJoinStatus,
+    addJoinRequest,
+    addConnection,
+    removeConnection,
+  } = useMeeting(
     useShallow((state) => ({
+      mutedList: state.mutedList,
+      visibleList: state.visibleList,
+      namesList: state.namesList,
+      removeConnection: state.removeConnection,
+      setPeerMuted: state.setPeerMuted,
+      setPeerVisible: state.setPeerVisible,
       setJoinStatus: state.setJoinStatus,
       addJoinRequest: state.addJoinRequest,
+      addConnection: state.addConnection,
     })),
   );
+  const session = useSession();
+  const { stream, muted, visible } = useStream(
+    useShallow((state) => ({
+      stream: state.stream,
+      muted: state.muted,
+      visible: state.visible,
+    })),
+  );
+  const { peer, myPeerId, setMyPeerId, setPeer } = usePeer();
 
   useEffect(() => {
     socket.connect();
@@ -65,7 +94,97 @@ export default function MeetingProvider({
       setJoinStatus("accepted");
       joinMeeting();
     });
+    return () => {
+      socket.off("user:wait-for-owner");
+      socket.off("meeting:full");
+      socket.off("user:rejected");
+      socket.off("user:accepted");
+      socket.off("user:join-request");
+    };
   }, [joinMeeting, socket, setJoinStatus, addJoinRequest]);
+
+  useEffect(() => {
+    if (!peer) {
+      return;
+    }
+    socket.on("user:joined", (user) => {
+      toast.success(`${user.name} joined`);
+
+      const call = peer.call(user.peerId, stream as MediaStream, {
+        metadata: {
+          user: {
+            ...session.data?.user,
+            muted,
+            visible,
+          },
+        },
+      });
+      call.on("stream", (remoteStream: MediaStream) => {
+        addConnection({
+          stream: remoteStream,
+          connection: call,
+          ...user,
+        });
+      });
+    });
+    return () => {
+      socket.off("user:joined");
+    };
+  }, [addConnection, muted, visible, peer, socket, session.data?.user, stream]);
+
+  useEffect(() => {
+    if (!peer || !stream) {
+      return;
+    }
+    peer.on("call", (call: any) => {
+      const {
+        peer: peerId,
+        metadata: { user },
+      } = call;
+      call.answer(stream);
+      call.on("stream", (remoteStream: MediaStream) => {
+        addConnection({
+          stream: remoteStream,
+          connection: call,
+          peerId,
+          ...user,
+        });
+      });
+    });
+    return () => {
+      peer.off("call");
+    };
+  }, [peer, stream, addConnection]);
+
+  useEffect(() => {
+    socket.on("user:left", (peerId: PeerId) => {
+      if (peerId !== myPeerId) {
+        toast.success(`${namesList[peerId]} has left the room`);
+        removeConnection(peerId);
+      }
+    });
+    return () => {
+      socket.off("user:left");
+    };
+  }, [myPeerId, namesList, socket, removeConnection]);
+
+  useEffect(() => {
+    socket.on("user:toggled-video", (peerId: PeerId) => {
+      setPeerVisible(peerId, !visibleList[peerId]);
+    });
+    return () => {
+      socket.off("user:toggled-video");
+    };
+  }, [visibleList, setPeerVisible, socket]);
+
+  useEffect(() => {
+    socket.on("user:toggled-audio", (peerId: PeerId) => {
+      setPeerMuted(peerId, !mutedList[peerId]);
+    });
+    return () => {
+      socket.off("user:toggled-audio");
+    };
+  }, [mutedList, socket, setPeerMuted]);
 
   return <div>{children}</div>;
 }

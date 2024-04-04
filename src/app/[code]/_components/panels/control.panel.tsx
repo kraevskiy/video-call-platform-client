@@ -17,11 +17,21 @@ import { useMeeting } from "@/hooks/state/use-meeting";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { MediaKind } from "@/types";
+import { useSocket } from "@/hooks/state/use-socket";
+import { usePeer } from "@/hooks/state/use-peer";
+import { useShallow } from "zustand/react/shallow";
 
 export default function ControlPanel() {
   const { muted, visible, toggleAudio, toggleVideo } = useStream();
-  const { meeting } = useMeeting();
+  const { meeting, connections } = useMeeting(
+    useShallow((state) => ({
+      meeting: state.meeting,
+      connections: state.connections,
+    })),
+  );
+  const socket = useSocket();
   const router = useRouter();
+  const myPeerId = usePeer((state) => state.myPeerId);
   const [, copy] = useCopyToClipboard();
 
   const handleCopy = () => {
@@ -38,19 +48,18 @@ export default function ControlPanel() {
     switch (kind) {
       case "audio":
         toggleAudio();
-        // socket.emit("user:toggle-audio", myPeerId);
+        socket.emit("user:toggle-audio", myPeerId);
         break;
       case "video":
-        toggleVideo();
-        // toggleVideo((newTrack: MediaStreamTrack) => {
-        //   Object.values(connections).forEach((el) => {
-        //     const sender = el.peerConnection?.getSenders().find((s) => {
-        //       return s.track?.kind === newTrack.kind;
-        //     });
-        //     sender?.replaceTrack(newTrack);
-        //   });
-        // });
-        // socket.emit("user:toggle-video", myPeerId);
+        toggleVideo((newTrack: MediaStreamTrack) => {
+          Object.values(connections).forEach((el) => {
+            const sender = el.peerConnection?.getSenders().find((s) => {
+              return s.track?.kind === newTrack.kind;
+            });
+            sender?.replaceTrack(newTrack);
+          });
+        });
+        socket.emit("user:toggle-video", myPeerId);
         break;
       default:
         break;

@@ -3,10 +3,10 @@
 import { useStream } from "@/hooks/state/use-stream";
 import { useSession } from "next-auth/react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import Peer from "../peer";
+import PeerVideo from "../peer";
 import { VideoContainer } from "../containers";
 
-export function MyStream() {
+export default function MyStream() {
   const { stream, muted, visible, status } = useStream();
   const { data } = useSession();
 
@@ -30,7 +30,7 @@ export function MyStream() {
           image={data?.user?.image || ""}
           stream={stream}
         >
-          <Peer stream={stream} isMe={true} />
+          <PeerVideo stream={stream} isMe={true} />
         </VideoContainer>
       )}
     </>
