@@ -1,6 +1,6 @@
 import { auth } from "../auth";
 import { apiAuthPrefix, authRoutes, Routes } from "../routes";
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export default auth((req) => {
   const { nextUrl } = req;

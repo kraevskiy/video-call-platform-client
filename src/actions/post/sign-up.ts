@@ -5,15 +5,15 @@ import getUserByEmail from "@/actions/get/get-user-by-email";
 import { hash } from "bcryptjs";
 import { db } from "@/lib/db";
 
-export default async function SignUp(data: SignUpInputs) {
-  const validateResult = SignUpValidationSchema.safeParse(data);
-  if (!validateResult.success) {
-    return { error: "Invalid fields!" };
+export default async function signUp(data: SignUpInputs) {
+  const validationResult = SignUpValidationSchema.safeParse(data);
+  if (!validationResult.success) {
+    return { error: "Invalid fields !" };
   }
-  const { name, email, password } = validateResult.data;
-  const userExist = await getUserByEmail(email);
-  if (userExist) {
-    return { error: "Email already taken!" };
+  const { email, name, password } = validationResult.data;
+  const candidate = await getUserByEmail(email);
+  if (candidate) {
+    return { error: "Email already taken !" };
   }
 
   const hashedPassword = await hash(password, 10);
@@ -25,5 +25,5 @@ export default async function SignUp(data: SignUpInputs) {
     },
   });
 
-  return { success: "User created successfully!" };
+  return { success: "User created successfully !" };
 }

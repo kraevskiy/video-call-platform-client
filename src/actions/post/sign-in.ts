@@ -12,14 +12,14 @@ export default async function signIn({
   data: SignInInputs;
   callbackURL?: string;
 }) {
-  const validateResult = SignInValidationSchema.safeParse(data);
-  if (!validateResult.success) {
-    return { error: "Invalid fields!" };
+  const validationResult = SignInValidationSchema.safeParse(data);
+  if (!validationResult.success) {
+    return { error: "Invalid fields !" };
   }
-  const { email, password } = validateResult.data;
-  const user = await getUserByEmail(email);
-  if (!user || !user.password || !user.email) {
-    return { error: "User not found!" };
+  const { email, password } = validationResult.data;
+  const candidate = await getUserByEmail(email);
+  if (!candidate || !candidate.password || !candidate.email) {
+    return { error: "User not found !" };
   }
 
   try {
@@ -28,17 +28,15 @@ export default async function signIn({
       password,
       redirectTo: callbackURL,
     });
-  } catch (e) {
-    console.log(e);
-
-    if (e instanceof AuthError) {
-      switch (e.type) {
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
         case "CredentialsSignin":
-          return { error: "Invalid credential" };
+          return { error: "Invalid credentials!" };
         default:
-          return { error: "Something went wrong" };
+          return { error: "Something went wrong :(" };
       }
     }
-    throw e;
+    throw error;
   }
 }
