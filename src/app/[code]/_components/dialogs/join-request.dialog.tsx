@@ -35,7 +35,7 @@ export default function JoinRequestDialog() {
 
   return (
     <div className="absolute left-4 top-4 rounded-xl bg-sky-50 p-2 dark:bg-gray-800 border shadow-md dark:border-gray-900">
-      <ScrollArea className="h-44 pr-3">
+      <ScrollArea className="max-h-44 pr-3 overflow-y-auto">
         <div className="space-y-2">
           {joinRequests.map((user) => (
             <div
