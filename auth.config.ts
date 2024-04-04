@@ -1,7 +1,7 @@
-import Google from "@auth/core/providers/google";
-import Github from "@auth/core/providers/github";
-import Credentials from "@auth/core/providers/credentials";
-import { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig } from "next-auth";
+import Google from "next-auth/providers/google";
+import Github from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
 import { SignInValidationSchema } from "@/types/forms";
 import getUserByEmail from "@/actions/get/get-user-by-email";
 import { compare } from "bcryptjs";
@@ -18,21 +18,17 @@ export default {
     }),
     Credentials({
       async authorize(credentials) {
-        const validateResult = SignInValidationSchema.safeParse(credentials);
-        if (!validateResult.success) {
+        const validationResult = SignInValidationSchema.safeParse(credentials);
+        if (!validationResult.success) {
           return null;
         }
-        const { email, password } = validateResult.data;
-        const user = await getUserByEmail(email);
-        if (!user || !user.password) {
-          return null;
-        }
-        const matchPassword = await compare(password, user.password);
-        if (!matchPassword) {
-          return null;
-        }
+        const { email, password } = validationResult.data;
+        const candidate = await getUserByEmail(email);
+        if (!candidate || !candidate.password) return null;
 
-        return user;
+        const match = await compare(password, candidate.password);
+        if (!match) return null;
+        return candidate;
       },
     }),
   ],
