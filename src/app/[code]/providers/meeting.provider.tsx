@@ -3,6 +3,8 @@
 import { useSocket } from "@/hooks/state/use-socket";
 import { useEffect } from "react";
 import { usePeer } from "@/hooks/state/use-peer";
+import { useMeeting } from "@/hooks/state/use-meeting";
+import { useShallow } from "zustand/react/shallow";
 
 export default function MeetingProvider({
   children,
@@ -13,6 +15,12 @@ export default function MeetingProvider({
 }) {
   const socket = useSocket();
   const { myPeerId, setMyPeerId, setPeer } = usePeer();
+  const { setJoinStatus, addJoinRequest } = useMeeting(
+    useShallow((state) => ({
+      setJoinStatus: state.setJoinStatus,
+      addJoinRequest: state.addJoinRequest,
+    })),
+  );
 
   useEffect(() => {
     socket.connect();
@@ -38,6 +46,26 @@ export default function MeetingProvider({
       }
     })();
   }, [setMyPeerId, setPeer]);
+
+  useEffect(() => {
+    socket.on("user:wait-for-owner", () => {
+      setJoinStatus("wait-for-owner");
+    });
+    socket.on("meeting:full", () => {
+      setJoinStatus("room-is-full");
+    });
+    socket.on("user:rejected", () => {
+      setJoinStatus("rejected");
+    });
+    socket.on("user:join-request", (user) => {
+      addJoinRequest(user);
+    });
+    socket.on("user:accepted", ({ code, user }) => {
+      socket.emit("meeting:join", { code, user });
+      setJoinStatus("accepted");
+      joinMeeting();
+    });
+  }, [joinMeeting, socket, setJoinStatus, addJoinRequest]);
 
   return <div>{children}</div>;
 }

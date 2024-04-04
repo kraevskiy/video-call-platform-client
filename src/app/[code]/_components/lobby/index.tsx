@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ import {
 import { useMeeting } from "@/hooks/state/use-meeting";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useShallow } from "zustand/react/shallow";
+import { useSocket } from "@/hooks/state/use-socket";
+import { usePeer } from "@/hooks/state/use-peer";
+import { useSession } from "next-auth/react";
 
 export default function Lobby() {
   const {
@@ -25,12 +28,16 @@ export default function Lobby() {
     toggleAudio,
     toggleVideo,
   } = useStream();
-  const { joinStatus, meeting } = useMeeting(
+  const { joinStatus, meeting, setJoinStatus } = useMeeting(
     useShallow((state) => ({
       joinStatus: state.joinStatus,
       meeting: state.meeting,
+      setJoinStatus: state.setJoinStatus
     })),
   );
+  const socket = useSocket();
+  const peerId = usePeer((state) => state.myPeerId);
+  const { data } = useSession();
 
   useEffect(() => {
     if (!stream) {
@@ -39,7 +46,20 @@ export default function Lobby() {
   }, [stream, getStream]);
 
   const handleJoin = () => {
-    // emit user join
+    setJoinStatus("loading");
+    socket.emit("user:join-request", {
+      code: meeting?.code as string,
+      user: {
+        peerId,
+        id: data?.user?.id as string,
+        email: data?.user?.email as string,
+        name: data?.user?.name as string,
+        image: data?.user?.image as string,
+        muted,
+        visible,
+      },
+      ownerId: meeting?.ownerId as string,
+    });
   };
 
   return (

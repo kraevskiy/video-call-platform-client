@@ -1,9 +1,9 @@
 import { Socket as ClientSocket } from 'socket.io-client';
+import { Code } from '@/types/index';
 
 export type Socket = ClientSocket<ServerToClientEvents, ClientToServerEvents>;
 
 export type PeerId = string;
-export type Code = string;
 
 export type PeerUser = {
 	id: string;
@@ -31,7 +31,7 @@ export interface ClientToServerEvents {
 	"user:join-request": (data: BasicJoinData) => void;
 	"user:accepted": (data: BasicDataWithCodeAndPeerUserWithSocketId) => void;
 	"user:rejected": (data: BasicDataWithCodeAndPeerUserWithSocketId) => void;
-	"meeting:join": (data: BasicDataWithCodeAndPeerUserWithSocketId) => void;
+	"meeting:join": (data: Omit<BasicJoinData, "ownerId">) => void;
 	"user:toggle-audio": (peerId: PeerId) => void;
 	"user:toggle-video": (peerId: PeerId) => void;
 }
